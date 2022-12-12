@@ -42,13 +42,15 @@
 
 
 const express = require('express')
-const logger = require('./looger')
+const logger = require('./logger')
 const app = express()
 const path =  require('path')
 const port = 3000;
-const book_routes = require("./routes/books-router")
+const book_routes = require("./routes/books-routes")
+const category_routes = require("./routes/category-routes")
 const books = require('./data/books')
 const mongoose =  require("mongoose")
+
 
 
 
@@ -72,6 +74,8 @@ app.get('^/$|/index(.html)?',(req,res)=>{
 })
 
 app.use('/books',book_routes)
+app.use('/category',category_routes)
+
 
 
 app.listen(port,()=>{

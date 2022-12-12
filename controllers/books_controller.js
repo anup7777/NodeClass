@@ -56,6 +56,7 @@ const getonebook = (req,res,next)=>{
     // if(!the_books) res.status(404).json({"reply" : " book not found"})
     // res.json(the_books)
     Book.findById(req.params.id)
+    .populate('category')
     .then((book)=>{
         res.json(book)
     })

@@ -31,3 +31,5 @@ router.route('/:id/reviews/:id')
     .delete()
 
 module.exports = router
+
+
