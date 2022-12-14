@@ -50,6 +50,7 @@ const book_routes = require("./routes/books-routes")
 const category_routes = require("./routes/category-routes")
 const books = require('./data/books')
 const mongoose =  require("mongoose")
+const user_routes = require('./routes/user-routes')
 
 
 
@@ -73,6 +74,7 @@ app.get('^/$|/index(.html)?',(req,res)=>{
     res.sendFile(path.join(__dirname,'views','index.html'))
 })
 
+app.use('/users', user-routes)
 app.use('/books',book_routes)
 app.use('/category',category_routes)
 
