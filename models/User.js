@@ -1,15 +1,26 @@
-const mongoose = require('mongoose')
-const { stringify } = require('uuid')
+const mongoose  =  require('mongoose')
 
-const userSchema = mongoose.Schema({
-    username:{
-        type:String,
-        required: true,
-        unique: true,
-        minLength: [5, 'Username should be longer than 5 characters']
+const userSchema =  mongoose.Schema({
+    username : {
+        type : String,
+        required :  true,
+        unique :  true,
+        minLenght: [5, " Username should be longer than five character"]
     },
-    password: {
-        type:string,
-        required: true
+    password : {
+        type : String,
+        required :  true
+    },
+
+    role:{
+        type:String,
+        enum:['Admin','User'],
+        default:'User'
     }
-}, {timestamps: true})
+    
+
+},{timestamps : true})
+
+module.exports = mongoose.model("User",userSchema)
+
+

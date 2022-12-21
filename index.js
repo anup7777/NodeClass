@@ -15,10 +15,7 @@
 // const prompt = require('prompt-sync')();
 
 
-
-
 // const data = prompt('Write a message ? ');
-
 
 
 // const fileOperation = async()=>{
@@ -41,6 +38,7 @@
 // fileOperation()
 
 
+require('dotenv').config()
 const express = require('express')
 const logger = require('./logger')
 const app = express()
@@ -51,6 +49,7 @@ const category_routes = require("./routes/category-routes")
 const books = require('./data/books')
 const mongoose =  require("mongoose")
 const user_routes = require('./routes/user-routes')
+const auth =  require("./middleware/auth")
 
 
 
@@ -60,7 +59,7 @@ mongoose.connect('mongodb://127.0.0.1:27017/books')
     console.log("connected to mongodb server")})
 .catch((err)=>next(err))
 
-
+console.log(process.env.SECRET)
 
 app.use((req,res,next)=>{
 
@@ -75,6 +74,7 @@ app.get('^/$|/index(.html)?',(req,res)=>{
 })
 
 app.use('/users', user-routes)
+app.use(auth.verifyUser)
 app.use('/books',book_routes)
 app.use('/category',category_routes)
 

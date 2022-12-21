@@ -84,6 +84,7 @@ const postonebook  = (req,res,next)=>{
 
     
 }
+
 const deletebook = (req,res,next) =>{
   Book.findByIdAndDelete(req.params.id).then((reply)=>{
 res.json(reply)
