@@ -1,17 +1,17 @@
 const express =  require("express")
 const router = express.Router()
-const bookController = require('../contollers/books_controller')
+const bookController = require("../controllers/books_controller")
 const reviewController = require("../contollers/Review_Controllers")
 const {verifyUser, verifyAdmin} =  require("../middleware/auth")
 
 
 router.route("/")
     .get(bookController.getAllBooks)
-    .post(verifyUser, bookController.createBook)
+    .post(verifyUser, bookController.postnewbooks)
     .put((req, res) => {
       res.status(501).json({ reply: "Put Req not supported" });
     })
-    .delete(verifyUser,verifyAdmin, bookController.deleteAllBooks);
+    .delete(verifyUser,verifyAdmin, bookController.deletebooks);
 
 router.use(verifyUser).route("/:id")
     .get(bookController.getBookById)

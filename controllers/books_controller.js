@@ -79,10 +79,7 @@ const postonebook  = (req,res,next)=>{
     }else{
     res.status(504).json({"reply": "Cannot post new book in the current id"})
     }
-
-   
-
-    
+ 
 }
 
 const deletebook = (req,res,next) =>{
