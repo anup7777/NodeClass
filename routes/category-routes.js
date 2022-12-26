@@ -1,18 +1,19 @@
-const express = require("express")
+const express = require('express')
+const categoryController = require('../controllers/category-controller')
+const { verifyAdmin } = require('../middleware/auth')
+
 const router = express.Router()
-const categoryController = require('../controllers/categories_controller')
 
 router.route('/')
-.get(categorycontroller.getallcategory)
-.post(categorycontroller.postnewcategory)
-.put((req,res)=>{res.status(501).json({"Reply": "Not Implemented"})})
-.delete(categorycontroller.deletecategory)
+    .get(categoryController.getAllCategories)
+    .post(verifyAdmin, categoryController.createCategory)
+    .put((req, res) => res.status(501).json({ 'msg': 'Not implemented' }))
+    .delete(verifyAdmin, categoryController.deleteAllCategories)
 
 router.route('/:category_id')
-.get(categorycontroller.getcategorybyId)
-.post((req,res)=>{res.status(501).json({"Reply": "Not Implemented"})})
-.put(categorycontroller.editcategorybyId)
-.delete(categorycontroller.deletecategorybyId)
+    .get(categoryController.getCategoryById)
+    .post((req, res) => res.status(501).json({ 'msg': 'Not implemented' }))
+    .put(verifyAdmin, categoryController.updateCategoryById)
+    .delete(verifyAdmin, categoryController.deleteCategoryById)
 
-module.exports =  router
-
+module.exports = router

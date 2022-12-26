@@ -1,90 +1,50 @@
-//  const date_fns =  require("date-fns")
-// const uuid  =  require("uuid")
-
-
-// let id=  (uuid.v4())  
-
-
-// const { Console } = require('console')
-// const os = require('os')
-// const path = require('path')
-// const  fs = require('fs')
-// const fspromises = require('fs').promises
-
-
-// const prompt = require('prompt-sync')();
-
-
-// const data = prompt('Write a message ? ');
-
-
-// const fileOperation = async()=>{
-
-//     try{
-//      await fs.promises.writeFile('./log.txt',"message \t id \t \t \t \t \t \t \t \t   date and time")
-//      await fspromises.appendFile('./log.txt','\n'+data)
-//      await fspromises.appendFile('./log.txt','\t'+uuid.v4())
-//      await fspromises.appendFile('./log.txt','\t '+date_fns.format(new Date(),'yyyy/MM/dd \t HH:mm:ss'))
-
-//     console.log(data)
-//     }
-//     catch (err){
-//         console.error(err)
-        
-//     }
-    
-// }
-
-// fileOperation()
-
-
 require('dotenv').config()
 const express = require('express')
+const path = require('path')
+const mongoose = require('mongoose')
 const logger = require('./logger')
+const booksRouter = require('./routes/books-routes')
+const categoryRouter = require('./routes/category-routes')
+const userRouter = require('./routes/users-routes')
+const auth = require('./middleware/auth')
+
+const port = process.env.PORT || 3000
+
+mongoose.connect(process.env.DB_URI).then(() => {
+    console.log('Connected to MongoDB')
+}).catch((err) => console.log(err))
+
 const app = express()
-const path =  require('path')
-const port = 3000;
-const book_routes = require("./routes/books-routes")
-const category_routes = require("./routes/category-routes")
-const books = require('./data/books')
-const mongoose =  require("mongoose")
-const user_routes = require('./routes/user-routes')
-const auth =  require("./middleware/auth")
 
-
-
-
-mongoose.connect('mongodb://127.0.0.1:27017/books')
-.then(()=>{
-    console.log("connected to mongodb server")})
-.catch((err)=>next(err))
-
-console.log(process.env.SECRET)
-
-app.use((req,res,next)=>{
-
+app.use((req, res, next) => {
+    logger.log(`${req.method}\t${req.headers.origin}\t${req.path}`)
+    console.log(`${req.method} ${req.path}`)
     next()
 })
-
+// To accept form data
+app.use(express.urlencoded({ extended: false }))
+// To accept json data
 app.use(express.json())
+// To serve static files
+app.use(express.static(path.join(__dirname, 'public')))
 
-app.get('^/$|/index(.html)?',(req,res)=>{
-    // res.send("hello World")
-    res.sendFile(path.join(__dirname,'views','index.html'))
+app.get('^/$|/index(.html)?', (req, res) => {
+    res.sendFile(path.join(__dirname, 'views', 'index.html'))
 })
 
-app.use('/users', user-routes)
+app.use('/users', userRouter)
 app.use(auth.verifyUser)
-app.use('/books',book_routes)
-app.use('/category',category_routes)
-
-
-
-app.listen(port,()=>{
-    console.log(`App is running on port : ${port}`)
+app.use('/books', booksRouter)
+app.use('/categories', categoryRouter)
+// Error handling middleware
+app.use((err, req, res, next) => {
+    console.log(err.stack)
+    if (res.statusCode == 200) res.status(500)
+    res.json({ msg: err.message })
 })
 
-app.use((err,req,res,next)=>{
-console.log(err)
-res.status(500).json({"err":err.message})
+mongoose.connection.once('open', () => {
+    app.listen(port, () => {
+        console.log(`Server is running at port ${port}`)
+    })
 })

@@ -1,42 +1,32 @@
-const express =  require("express")
+const express = require('express')
 const router = express.Router()
-const bookController = require("../controllers/books_controller")
-const reviewController = require("../contollers/Review_Controllers")
-const {verifyUser, verifyAdmin} =  require("../middleware/auth")
+const bookController = require('../controllers/book-controller')
+const reviewController = require('../controllers/review-controller')
+const { verifyUser, verifyManager, verifyAdmin } = require('../middleware/auth')
 
 
-router.route("/")
+router.route('/')
     .get(bookController.getAllBooks)
-    .post(verifyUser, bookController.postnewbooks)
-    .put((req, res) => {
-      res.status(501).json({ reply: "Put Req not supported" });
-    })
-    .delete(verifyUser,verifyAdmin, bookController.deletebooks);
+    .post(verifyManager, bookController.createBook)
+    .put((req, res) => res.status(501).json({ 'msg': 'Not implemented' }))
+    .delete(verifyAdmin, bookController.deleteAllBooks)
 
-router.use(verifyUser).route("/:id")
+router.route('/:book_id')
     .get(bookController.getBookById)
-    .post((req, res) => {
-      res.status(501).json({ reply: "Not implemented" });
-    })
+    .post((req, res) => res.status(501).json({ 'msg': 'Not implemented' }))
     .put(bookController.updateBookById)
-    .delete(bookController.deleteBookById);
-    
-router.route('/:id/reviews')
+    .delete(verifyAdmin, bookController.deleteBookById)
+
+router.route('/:book_id/reviews')
     .get(reviewController.getAllReviews)
     .post(reviewController.createReview)
-    .put((req,res )=>{
-    res.status(501).json({reply: "Method not supported"})})
-    .delete(reviewController.deleteReview)
+    .put((req, res) => res.status(501).json({ 'msg': 'Not implemented' }))
+    .delete(verifyAdmin, reviewController.deleteAllReviews)
 
-router.route('/:id/reviews/:review_id')
-    .get(reviewController.getReviewsById)
-    .post((req, res) => {
-        res.status(501).json({ reply: "Not implemented" });
-    })
-    .put(reviewController.updateReviewsById)
-    .delete(reviewController.deletereviewbyId)
+router.route('/:book_id/reviews/:review_id')
+    .get(reviewController.getReviewById)
+    .post((req, res) => res.status(501).json({ 'msg': 'Not implemented' }))
+    .put(reviewController.updateReviewById)
+    .delete(reviewController.deleteReviewById)
 
-module.exports = router;
-
-
-
+module.exports = router

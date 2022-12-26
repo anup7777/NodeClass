@@ -1,13 +1,22 @@
-const {v4:uuid} = require('uuid')
 const {format} = require('date-fns')
-const fs =  require('fs')
-const path =  require('path')
+const {v4: uuid} = require('uuid')
+const fs = require('fs')
+const path = require('path')
 
-const log = (msg) =>{
-    const logItem = `\n ${uuid()} \t ${format(new Date(),'yyyy-mm-dd \t hh:mm:ss' ) } \t ${msg}` 
-    fs.appendFile(path.join(__dirname,'logs','event-logs.txt'),logItem, (err)=> console.log(err))
+const createLogItem = (message) => {
+    const dateTime = `${format(new Date(), 'yyyy-MM-dd\tHH:mm:ss')}`
+    return `${uuid()}\t${dateTime}\t${message}\n`
 }
 
+const saveLogItem = (logItem) => {
+    if(!fs.existsSync('logs'))
+        fs.mkdir(path.join(__dirname, 'logs'), (err) => console.error(err))
+    
+   fs.appendFile(path.join(__dirname, 'logs', 'event-logs.txt'), logItem, (err) => {
+        if(err) console.error(err)
+   })
+}
 
-//  pure function is easily to test than impure function
-module.exports= {log};
+const log = (message) => saveLogItem(createLogItem(message))
+
+module.exports = {log}

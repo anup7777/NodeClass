@@ -1,15 +1,14 @@
 const mongoose = require('mongoose')
 
-const categorySchema = mongose.Schema({
-    name:{
-        type:String,
-        required: [true, 'Category name is required']
+const categorySchema = mongoose.Schema({
+    name: {
+        type: String,
+        require: true
     },
-    books:[{
-        type:mongoose.Schema.Types.ObjectId,
-        ref : 'Book'
+    books: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Book'
     }]
 })
 
 module.exports = mongoose.model('Category', categorySchema)
-

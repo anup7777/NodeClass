@@ -1,35 +1,35 @@
 const jwt = require('jsonwebtoken')
 
-const verifyUser =  (req,res,next) =>{
-    if(!req.headers.authorization){
-        let err =  new Error('Authorization token  is missing ')
-        res.status(400)
-        return next(err)
+const verifyUser = (req, res, next) => {
+    let authHeader = req.headers.authorization
+    if (!authHeader) {
+        res.status(401)
+        return next(new Error('No authentication information provided'))
     }
-
-    token =  req.headers.authorization.split(' ')[1]
-    jwt.verify(token,process.env.SECRET,(err, decoded)=>{
-        if(err){
-            return next(err)
-        }
-        else{
-            req.user = decoded
-            next()
-        }
+    const token = authHeader.split(' ')[1]
+    jwt.verify(token, process.env.SECRET, (err, decoded) => {
+        if (err) return next(err)
+        req.user = decoded
+        console.log(req.user)
+        next()
     })
-
 }
 
-const verifyAdmin = (req,res,next) => {
-    verifyUser(req,res,next)
-    if(req.user.role !== 'Admin'){
-        let err = new Error('You are not authorized')
+const verifyAdmin = (req, res, next) => {
+    if (req.user.role != 'admin') {
         res.status(403)
-        return next(err)
+        return next(new Error('Not admin'))
     }
     next()
 }
 
+const verifyManager = (req, res, next) => {
+    if (req.user.role == 'manager' || req.user.role == 'admin') return next()
+    else {
+        res.status(403)
+        return next(new Error('Not authorized'))
+    }
+}
 
-module.exports =  {verifyUser, verifyAdmin}
 
+module.exports = { verifyUser, verifyAdmin, verifyManager }
