@@ -10,9 +10,15 @@ const auth = require('./middleware/auth')
 
 const port = process.env.PORT || 3000
 
-mongoose.connect(process.env.DB_URI).then(() => {
-    console.log('Connected to MongoDB')
-}).catch((err) => console.log(err))
+mongoose.connect("mongodb://localhost:27017/books-29B")
+    .then(() => {
+        console.log("Connected to MongoDB server");
+        app.listen(port, () => {
+            console.log(`App is running on the port: ${port}`);
+        });
+    })
+    .catch((err) => console.log(err));
+
 
 const app = express()
 
@@ -43,8 +49,3 @@ app.use((err, req, res, next) => {
     res.json({ msg: err.message })
 })
 
-mongoose.connection.once('open', () => {
-    app.listen(port, () => {
-        console.log(`Server is running at port ${port}`)
-    })
-})
