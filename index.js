@@ -6,6 +6,7 @@ const logger = require('./logger')
 const booksRouter = require('./routes/books-routes')
 const categoryRouter = require('./routes/category-routes')
 const userRouter = require('./routes/users-routes')
+const profile_routes = require('../routes/profile-routes')
 const auth = require('./middleware/auth')
 
 const port = process.env.PORT || 3000
@@ -40,8 +41,10 @@ app.get('^/$|/index(.html)?', (req, res) => {
 
 app.use('/users', userRouter)
 app.use(auth.verifyUser)
+app.use('/profile', auth.verifyUser, profile_routes)
 app.use('/books', booksRouter)
 app.use('/categories', categoryRouter)
+
 // Error handling middleware
 app.use((err, req, res, next) => {
     console.log(err.stack)
